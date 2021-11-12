@@ -1,18 +1,19 @@
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class NetworkHelper {
-  final String url;
-  NetworkHelper({required this.url});
+class Networkhelper {
+  static const webSiteURL = "http://localhost:8080";
+  static const filmRepositoryURL   = "$webSiteURL/film/selectAll";
+  static const userRepositoryURL   = "$webSiteURL/user/selectAll";
+  static const reviewRepositoryURL = "$webSiteURL/review/selectAll";
 
-  Future getData() async {
+  static Future getData(url) async {
     http.Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
-      //Resultado da requisição
-      return jsonDecode(response.body);
+      // print(response.statusCode);
+      return response.body;
     } else {
-      print(response.statusCode);
-      return null;
+      throw Exception(
+          'Http Get ERROR:${response.statusCode}: ${response.reasonPhrase}');
     }
   }
 }

@@ -1,4 +1,4 @@
-// import 'dart:convert';
+import 'dart:convert';
 
 class Film {
   final int id;
@@ -30,53 +30,68 @@ class Film {
   //   );
   // }
 
-  // Map<String, dynamic> toMap() {
-  //   return {
-  //     'id': id,
-  //     'name': name,
-  //     'genre': genre,
-  //     'director': director,
-  //     'date': date,
-  //   };
-  // }
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'genre': genre,
+      'director': director,
+      'date': date,
+    };
+  }
 
-  // factory Film.fromMap(Map<String, dynamic> map) {
-  //   return Film(
-  //     id: map['id']?.toInt(),
-  //     name: map['name'],
-  //     genre: map['genre'],
-  //     director: map['director'],
-  //     date: map['date'],
-  //   );
-  // }
+  factory Film.fromMap(Map<String, dynamic> map) {
+    return Film(
+      id: map['id']?.toInt(),
+      name: map['name'],
+      genre: map['genre'],
+      director: map['director'],
+      date: map['date'],
+    );
+  }
 
-  // String toJson() => json.encode(toMap());
+  String toJson() => json.encode(toMap());
 
-  // factory Film.fromJson(String source) => Film.fromMap(json.decode(source));
+  factory Film.fromJson(String source) => Film.fromMap(jsonDecode(source));
 
-  // @override
-  // String toString() {
-  //   return 'Film(id: $id, name: $name, genre: $genre, director: $director, date: $date)';
-  // }
+  static List<Film> listFromJson(String source) {
+    List<Film> returnList = [];
+    final sourceList = jsonDecode(source);
 
-  // @override
-  // bool operator ==(Object other) {
-  //   if (identical(this, other)) return true;
-  
-  //   return other is Film &&
-  //     other.id == id &&
-  //     other.name == name &&
-  //     other.genre == genre &&
-  //     other.director == director &&
-  //     other.date == date;
-  // }
+    if (sourceList is! List) {
+      returnList.add(Film.fromJson(source));
+      return returnList;
+    }
 
-  // @override
-  // int get hashCode {
-  //   return id.hashCode ^
-  //     name.hashCode ^
-  //     genre.hashCode ^
-  //     director.hashCode ^
-  //     date.hashCode;
-  // }
+    for (var element in sourceList) {
+      returnList.add(Film.fromMap(element));
+    }
+    return returnList;
+  }
+
+  @override
+  String toString() {
+    return 'Film(id: $id, name: $name, genre: $genre, director: $director, date: $date)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Film &&
+        other.id == id &&
+        other.name == name &&
+        other.genre == genre &&
+        other.director == director &&
+        other.date == date;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        name.hashCode ^
+        genre.hashCode ^
+        director.hashCode ^
+        date.hashCode;
+  }
 }

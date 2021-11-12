@@ -1,3 +1,4 @@
+/* Default
 import 'package:flutter/material.dart';
 
 void main() {
@@ -20,7 +21,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/* Default Homepage
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -127,3 +127,84 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }*/
+
+import 'package:flutter/material.dart';
+
+import 'film.dart';
+import 'network_helper.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      title: 'Welcome to Flutter',
+      home: FilmListScroll(),
+    );
+  }
+}
+
+class FilmListScroll extends StatefulWidget {
+  const FilmListScroll({Key? key}) : super(key: key);
+
+  @override
+  _FilmListScrollState createState() => _FilmListScrollState();
+}
+
+class _FilmListScrollState extends State<FilmListScroll> {
+  final _filmlist = <Film>[
+    Film(
+        id: 1,
+        name: "name",
+        genre: "genre",
+        director: "director",
+        date: "date"),
+    Film(
+        id: 2,
+        name: "name2",
+        genre: "genre",
+        director: "director2",
+        date: "date")
+  ];
+  // final _listfontstyle = const TextStyle(fontSize: 15);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Lista Filmes"),
+      ),
+      body: _buildFilmList(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _requestFilmList,
+        tooltip: 'Load Film List',
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  void _requestFilmList() {
+    Future filmRequest = Networkhelper.getData(Networkhelper.filmRepositoryURL);
+    filmRequest.then((value) {
+      final parsedList = Film.listFromJson(value);
+      setState(() {
+        _filmlist.addAll(parsedList);
+      });
+    });
+  }
+
+  Widget _buildFilmList() {
+    return ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: _filmlist.length,
+        itemBuilder: (BuildContext _contex, int i) {
+          return ListTile(
+            title: Text(_filmlist[i].name),
+            subtitle: Text(_filmlist[i].director),
+          );
+        });
+  }
+}

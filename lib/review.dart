@@ -1,4 +1,4 @@
-// import 'dart:convert';
+import 'dart:convert';
 
 class Review {
   final int id;
@@ -38,61 +38,76 @@ class Review {
   //   );
   // }
 
-  // Map<String, dynamic> toMap() {
-  //   return {
-  //     'id': id,
-  //     'idUser': idUser,
-  //     'idFilm': idFilm,
-  //     'review': review,
-  //     'likes': likes,
-  //     'score': score,
-  //     'date': date,
-  //   };
-  // }
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'idUser': idUser,
+      'idFilm': idFilm,
+      'review': review,
+      'likes': likes,
+      'score': score,
+      'date': date,
+    };
+  }
 
-  // factory Review.fromMap(Map<String, dynamic> map) {
-  //   return Review(
-  //     id: map['id']?.toInt(),
-  //     idUser: map['idUser']?.toInt(),
-  //     idFilm: map['idFilm']?.toInt(),
-  //     review: map['review'],
-  //     likes: map['likes']?.toInt(),
-  //     score: map['score']?.toInt(),
-  //     date: map['date'],
-  //   );
-  // }
+  factory Review.fromMap(Map<String, dynamic> map) {
+    return Review(
+      id: map['id']?.toInt(),
+      idUser: map['idUser']?.toInt(),
+      idFilm: map['idFilm']?.toInt(),
+      review: map['review'],
+      likes: map['likes']?.toInt(),
+      score: map['score']?.toInt(),
+      date: map['date'],
+    );
+  }
 
-  // String toJson() => json.encode(toMap());
+  String toJson() => jsonEncode(toMap());
 
-  // factory Review.fromJson(String source) => Review.fromMap(json.decode(source));
+  factory Review.fromJson(String source) => Review.fromMap(jsonDecode(source));
 
-  // @override
-  // String toString() {
-  //   return 'Review(id: $id, idUser: $idUser, idFilm: $idFilm, review: $review, likes: $likes, score: $score, date: $date)';
-  // }
+  static List<Review> listFromJson(String source) {
+    List<Review> returnList = [];
+    final sourceList = jsonDecode(source);
 
-  // @override
-  // bool operator ==(Object other) {
-  //   if (identical(this, other)) return true;
-  
-  //   return other is Review &&
-  //     other.id == id &&
-  //     other.idUser == idUser &&
-  //     other.idFilm == idFilm &&
-  //     other.review == review &&
-  //     other.likes == likes &&
-  //     other.score == score &&
-  //     other.date == date;
-  // }
+    if (sourceList is! List) {
+      returnList.add(Review.fromJson(source));
+      return returnList;
+    }
 
-  // @override
-  // int get hashCode {
-  //   return id.hashCode ^
-  //     idUser.hashCode ^
-  //     idFilm.hashCode ^
-  //     review.hashCode ^
-  //     likes.hashCode ^
-  //     score.hashCode ^
-  //     date.hashCode;
-  // }
+    for (var element in sourceList) {
+      returnList.add(Review.fromMap(element));
+    }
+    return returnList;
+  }
+
+  @override
+  String toString() {
+    return 'Review(id: $id, idUser: $idUser, idFilm: $idFilm, review: $review, likes: $likes, score: $score, date: $date)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    //
+    return other is Review &&
+        other.id == id &&
+        other.idUser == idUser &&
+        other.idFilm == idFilm &&
+        other.review == review &&
+        other.likes == likes &&
+        other.score == score &&
+        other.date == date;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        idUser.hashCode ^
+        idFilm.hashCode ^
+        review.hashCode ^
+        likes.hashCode ^
+        score.hashCode ^
+        date.hashCode;
+  }
 }

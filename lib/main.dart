@@ -130,7 +130,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
 import 'package:flutter/material.dart';
 
-import 'film.dart';
+
+import 'models/film.dart';
 import 'network_helper.dart';
 
 void main() => runApp(const MyApp());
@@ -155,7 +156,10 @@ class FilmListScroll extends StatefulWidget {
 }
 
 class _FilmListScrollState extends State<FilmListScroll> {
-  final _filmlist = <Film>[
+
+  //----------------------------------------------------------------------------------------
+  //original
+/*   final _filmlist = <Film>[
     Film(
         id: 1,
         name: "name",
@@ -168,8 +172,31 @@ class _FilmListScrollState extends State<FilmListScroll> {
         genre: "genre",
         director: "director2",
         date: "date")
-  ];
+  ]; */
   // final _listfontstyle = const TextStyle(fontSize: 15);
+  //------------------------------------------------------------------------------------------
+
+  //-------------------------------------------------------------------------------
+  //Teste G01
+  bool loading = true;
+  List<Film> _filmlist = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    //teste G02
+    loading = true;
+    //fim teste G02
+    _requestFilmList();
+  }
+  // teste G01 realizado com sucesso, tela inicia com conteudo do database.
+
+  //  teste G02 -> adicionar loading
+  //    mudança em: initState(){...}, Widget build(...){...}, void _requestFilmList(){...}
+  //  falha no teste?, !loading funciona direito?, existe tela de recarregamento?
+
+  //-------------------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +204,11 @@ class _FilmListScrollState extends State<FilmListScroll> {
       appBar: AppBar(
         title: const Text("Lista Filmes"),
       ),
-      body: _buildFilmList(),
+      //original:
+      //body: _buildFilmList(),
+      //teste G02:
+      body: !loading ? _buildFilmList() : const CircularProgressIndicator() ,
+      //fim teste G02
       floatingActionButton: FloatingActionButton(
         onPressed: _requestFilmList,
         tooltip: 'Load Film List',
@@ -186,12 +217,19 @@ class _FilmListScrollState extends State<FilmListScroll> {
     );
   }
 
-  void _requestFilmList() {
+  //original:
+  //void _requestFilmList() {
+  //teste G02:
+  Future _requestFilmList() async {
+  //fim teste G02
     Future filmRequest = Networkhelper.getData(Networkhelper.filmRepositoryURL);
     filmRequest.then((value) {
       final parsedList = Film.listFromJson(value);
       setState(() {
         _filmlist.addAll(parsedList);
+        //teste G02
+        loading = false;
+        //fim teste  G02
       });
     });
   }
